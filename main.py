@@ -1,14 +1,16 @@
-import sys  # Imports SYS module for command line input and output
-import os   # Imports OS module for database 
-
 # Opens database file
-file = os.open("data.db", os.O_RDWR | os.O_CREAT)
+file = open("data.db", "a")
+
+# Classes
+# Key-Value pair class
+class keyValue:
+    def __int__(self, key, value):
+        self.key = key
+        self.value = value
 
 # Loops through system input
-for i in sys.stdin:
-    if i[0:3] == "SET":
-        print(i)
-    if i[0:3] == "GET":
-        print(i)
-    if i[0:4] == "EXIT":
+while True:
+    cmd = input("Enter commands (SET, GET, EXIT): ")
+    if cmd == "EXIT":
         break
+    print(cmd)
