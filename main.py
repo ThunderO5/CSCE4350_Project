@@ -10,8 +10,12 @@ class keyValue:
         file = open("data.db", "a")
         file.write(f"{key} {value} \n")
 
-    def GET(self, cmdKey):
-        print("Hello!")
+    def GET(key):
+        file = open("data.db", "r")
+        for line in file:
+            parts = line.split(" ")
+            if parts[0] == key:
+                return parts[1]
 
 kv = keyValue
 
@@ -27,9 +31,7 @@ while True:
         key = parts[1]
         value = parts[2]
         kv.SET(key, value)
-
     if command == "GET":
-        print(parts[0])
-    
-    
-    
+        key = parts[1]
+        value = kv.GET(key)
+        print(value)    
