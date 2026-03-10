@@ -1,12 +1,13 @@
 import os   # Imports OS for file paths
 
 # Classes
-# Key-Value pair class
-class keyValuePair:
+# Key-Value Pair Class
+# Manual implementation of dictionaries using arrays
+class KeyValuePair:
     def __init__(self):
         self.store = []
     
-    def SET(self, key, value):
+    def set(self, key, value):
         # Checks if key is already stored
         for i in range(len(self.store)):
             k, v = self.store[i]
@@ -17,7 +18,7 @@ class keyValuePair:
         # Append otherwise
         self.store.append((key, value))
 
-    def GET(self, key):
+    def get(self, key):
         # Returns value from store, if exists
         for k, v in self.store:
             if k == key:
@@ -26,36 +27,36 @@ class keyValuePair:
         return ""
 
 # Persistent Storage, or reads/appends data to data.db and kv-pair
-class persistentStorage:
+class PersistentStorage:
     def __init__(self, filename):
         self.filename = filename
-        self.kv = keyValuePair()
+        self.kv = KeyValuePair()
         if not os.path.exists("data.db"):
-            file = open(self.filename, "a")
+            open(filename, "a")
 
         self.replay_log()
 
     def replay_log(self):
-        file = open(self.filename, "r")
-        for line in file:
-            parts = line.split(" ", 2)
-            
-            if parts[0] == "SET":
-                self.kv.SET(parts[1], parts[2])
+        with open(self.filename, "r") as file:
+            for line in file:
+                parts = line.split(" ", 2)
+                
+                if parts[0] == "SET":
+                    self.kv.SET(parts[1], parts[2])
     
     def append_log(self, command):
-        file = open(self.filename, "a")
-        file.write(command + "\n")
+        with open(self.filename, "a") as file:
+            file.write(command + "\n")
 
-    def SET(self, key, value):
+    def set(self, key, value):
         self.append_log(f"{key} {value}")
-        self.kv.SET(key, value)
+        self.kv.set(key, value)
     
-    def GET(self, key):
-        return self.kv.GET(key)
+    def get(self, key):
+        return self.kv.get(key)
 
 def main():
-    kv = persistentStorage("data.db")
+    kv = PersistentStorage("data.db")
 
     # Loops through system input
     while True:
@@ -69,11 +70,11 @@ def main():
         if command == "SET":
             key = parts[1]
             value = parts[2]
-            kv.SET(key, value)
+            kv.set(key, value)
 
         if command == "GET":
             key = parts[1]
-            value = kv.GET(key)
+            value = kv.get(key)
             print(value)    
 
 main()
