@@ -26,28 +26,34 @@ class KeyValuePair:
         # Otherwise, returns nothing
         return ""
 
-# Persistent Storage, or reads/appends data to data.db and kv-pair
+# Persistent Storage
+# Reads and appends key-value pairs to data.db,
+# and stores key-value pairs to memory.
 class PersistentStorage:
     def __init__(self, filename):
         self.filename = filename
         self.kv = KeyValuePair()
+
+        # Creates data.db if not found
         if not os.path.exists("data.db"):
             open(filename, "a")
 
         self.replay_log()
 
+    # Reconstructs the database from previous inputs
     def replay_log(self):
         with open(self.filename, "r") as file:
             for line in file:
                 parts = line.split(" ", 2)
-                
                 if parts[0] == "SET":
                     self.kv.SET(parts[1], parts[2])
     
+    # Appends commands to the database
     def append_log(self, command):
         with open(self.filename, "a") as file:
             file.write(command + "\n")
 
+    # Sets keys and values to the database, then memory
     def set(self, key, value):
         self.append_log(f"{key} {value}")
         self.kv.set(key, value)
