@@ -1,3 +1,5 @@
+import os   # Imports OS for file paths
+
 # Classes
 # Key-Value pair class
 class keyValuePair:
@@ -16,20 +18,24 @@ class keyValuePair:
         self.store.append((key, value))
 
     def GET(self, key):
-        # Returns value from store
+        # Returns value from store, if exists
         for k, v in self.store:
             if k == key:
                 return v
-        return None
+        # Otherwise, returns nothing
+        return ""
 
 # Persistent Storage, or reads/appends data to data.db and kv-pair
 class persistentStorage:
     def __init__(self, filename):
         self.filename = filename
         self.kv = keyValuePair()
+        if not os.path.exists("data.db"):
+            file = open(self.filename, "a")
+
         self.replay_log()
 
-    def replay_log(self, command):
+    def replay_log(self):
         file = open(self.filename, "r")
         for line in file:
             parts = line.split(" ", 2)
@@ -38,7 +44,7 @@ class persistentStorage:
                 self.kv.SET(parts[1], parts[2])
     
     def append_log(self, command):
-        file = open("SET" + self.filename, "a")
+        file = open(self.filename, "a")
         file.write(command + "\n")
 
     def SET(self, key, value):
